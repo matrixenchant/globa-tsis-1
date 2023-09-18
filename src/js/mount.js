@@ -2,58 +2,42 @@ import anime from 'animejs';
 
 export const events = [
   {
-    age: 'Neolithic era',
-    date: '10 000 <span>BC</span>',
+    age: 'Renaissance Age',
+    date: '1492 <span>year</span>',
     content: [
       {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
-      },
-      {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
+        img: require('../assets/1.png').default,
+        label: 'The discovery of America by Columbus, which led to colossal changes in the geopolitical picture of the world',
       },
     ],
   },
   {
-    age: 'Neolithic era',
-    date: '5 000 <span>BC</span>',
+    age: 'Renaissance Age',
+    date: '1530<span>s</span> <span>years</span>',
     content: [
       {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
-      },
-      {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
+        img: require('../assets/2.png').default,
+        label: 'Artists such as Leonardo da Vinci and Michelangelo created works that inspire and delight us to this day',
       },
     ],
   },
   {
-    age: 'Neolithic era',
-    date: '2 000 <span>BC</span>',
+    age: 'Renaissance Age',
+    date: '1543 <span>year</span>',
     content: [
       {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
-      },
-      {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
+        img: require('../assets/3.png').default,
+        label: 'A revision of Copernicus\'s heliocentric system, which led to a revolution in astronomy and understanding of the cosmos',
       },
     ],
   },
   {
-    age: 'New era',
-    date: '1000 <span>year</span>',
+    age: 'Renaissance Age',
+    date: '1687 <span>year</span>',
     content: [
       {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
-      },
-      {
-        img: '../assets/test.png',
-        label: 'Transition from hunting and gathering to agriculture',
+        img: require('../assets/4.png').default,
+        label: 'Newton\'s discovery of the laws of motion and gravity, which established the foundations of classical mechanics and physics',
       },
     ],
   },

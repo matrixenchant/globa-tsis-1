@@ -1,58 +1,85 @@
-import { DragGesture } from '@use-gesture/vanilla';
+import { ScrollGesture } from '@use-gesture/vanilla';
 import anime from 'animejs';
 import '../sass/main.scss';
+import './map';
 import { changeAge, events, mountEvents } from './mount';
+import { animateMap } from './map';
+mountEvents();
 
-mountEvents()
-
-const $scroll = document.querySelector('.wrapper-scroll');
-const setX = (x) => {
-  anime({
-    targets: $scroll,
-    translateX: x,
-  });
+const getRectByIndex = (i) => {
+  return document.querySelector(`.event:nth-child(${i})`).getBoundingClientRect();
 };
 
-const eventWidth = window.innerWidth * 0.9;
-const eventGap = 200;
+const init = () => {
+  const $scroll = document.querySelector('.wrapper-scroll');
+  const firstEventWidth = getRectByIndex(1).width;
 
-document.querySelector('.timeline').style.left = `${eventWidth / 2}px`;
-document.querySelector('.timeline').style.width = `${eventWidth * (events.length - 1) + ((events.length - 1) * eventGap)}px`;
-setX((window.innerWidth - eventWidth) / 2);
+  // Init Styles
+  document.querySelector('.timeline').style.left = `${
+    (window.innerWidth - firstEventWidth) / 2 + firstEventWidth / 2
+  }px`;
+  document.querySelector('.timeline').style.width = `${getRectByIndex(events.length).x}px`;
 
-let activeEvent = 0;
-let disabled = false;
+  document.querySelector(`.event:nth-child(1)`).style.marginLeft = `${
+    (window.innerWidth - firstEventWidth) / 2
+  }px`;
+  const maxScrollX = $scroll.getBoundingClientRect().width - window.innerWidth * 0.6;
 
-const gesture = new DragGesture($scroll, ({ active, movement: [mx, my] }) => {
-  if (disabled) return;
-
-  $scroll.style.cursor = 'grabbing';
-
-  if (!active && mx !== 0) {
-    const prevEvent = events[activeEvent];
-
-    if (mx < -100) activeEvent++;
-    if (mx > 100) activeEvent--;
-
-    const event = events[activeEvent];
-
-    if (prevEvent?.age !== event?.age) {
-      changeAge(event.age);
-    }
-
-    $scroll.style.cursor = 'grab';
-    disabled = true;
-    setTimeout(() => {
-      disabled = false;
-    }, 450);
+  // Observer
+  function handleIntersection(entries, observer) {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+      }
+    });
   }
 
-  const offset = (window.innerWidth - eventWidth) / 2 + (-activeEvent * eventWidth) + (-eventGap * activeEvent);
+  const options = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.0,
+  };
 
-  anime({
-    targets: $scroll,
-    translateX: active ? offset + mx : offset,
-    duration: active ? 0 : 400,
-    easing: 'easeOutCubic',
+  const observer = new IntersectionObserver(handleIntersection, options);
+  const targetElement = document
+    .querySelectorAll('.event-pointer')
+    .forEach((el) => observer.observe(el));
+
+  // Scroll Handler
+  let age = 'Neolithic era';
+
+  const scroll = new ScrollGesture(window, ({ xy: [x, y] }) => {
+    const progressScroll = y / (document.body.scrollHeight - window.innerHeight);
+
+    const targetX = maxScrollX * progressScroll;
+
+    animateMap(progressScroll)
+
+    for (let i = 0; i < events.length; i++) {
+      const { x } = document
+        .querySelector(`.event:nth-child(${i + 1})`)
+        .querySelector('.event-pointer')
+        .getBoundingClientRect();
+
+      const center = window.innerWidth * 0.5;
+      if (center - window.innerWidth * 0.2 <= x && x <= center + window.innerWidth * 0.2) {
+        const event = events[i];
+
+        if (event.age !== age) {
+          console.log('change age to: ', event.age);
+          changeAge(event.age);
+          age = event.age;
+        }
+      }
+    }
+
+    anime({
+      targets: $scroll,
+      translateX: -targetX,
+      duration: 0,
+    });
   });
-});
+
+  window.dispatchEvent(new CustomEvent('scroll'));
+};
+
+setTimeout(init, 100);
